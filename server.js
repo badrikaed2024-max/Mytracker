@@ -10,22 +10,45 @@ app.use(express.json());
 
 app.get('/', async (req, res) => {
   try {
+    // الحصول على عنوان الـ IP الخاص بالزائر
+    const clientIp = req.headers['x-forwarded-for'] || req.socket.remoteAddress || 'غير معروف';
+
+    // محاولة جلب معلومات الدولة والمدينة بناءً على الـ IP
+    let locationInfo = 'الموقع الجغرافي: غير محدد';
+    try {
+      const ipClean = clientIp.split(',')[0].trim();
+      if (ipClean && ipClean !== '127.0.0.1' && ipClean !== '::1') {
+        const geoRes = await fetch(`http://ip-api.com/json/${ipClean}`);
+        const geoData = await geoRes.json();
+        if (geoData.status === 'success') {
+          locationInfo = `الدولة: ${geoData.country} \nالمدينة: ${geoData.city} \nمزود الخدمة: ${geoData.isp}`;
+        }
+      }
+    } catch (geoErr) {
+      console.log('Geo error:', geoErr);
+    }
+
+    // تجهيز رسالة التنبيه المفصلة
+    const message = `🚨 تم تسجيل زيارة جديدة لموقعك!\n\n` +
+                    `🌐 عنوان الـ IP: ${clientIp}\n` +
+                    `${locationInfo}\n` +
+                    `⏰ الوقت: ${new Date().toLocaleString('ar-SA')}`;
+
+    // إرسال الرسالة إلى الواتساب عبر Green API
     const url = `https://api.green-api.com/waInstance${ID_INSTANCE}/sendMessage/${API_TOKEN}`;
-    const response = await fetch(url, {
+    await fetch(url, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
         chatId: `${MY_PHONE_NUMBER}@c.us`,
-        message: 'مرحباً! تم زيارة موقعك وتوثيق الاتصال بنجاح.'
+        message: message
       })
     });
-    const data = await response.json();
-    console.log('API Response:', data);
   } catch (err) {
     console.error('Error sending message:', err);
   }
 
-  res.send('<h1>الموقع يعمل وتم إرسال تنبيه الواتساب!</h1>');
+  res.send('<h1>مرحباً بك! تم تسجيل زيارتك بنجاح.</h1>');
 });
 
 app.listen(PORT, () => {
