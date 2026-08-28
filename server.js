@@ -27,7 +27,7 @@ async function sendWhatsAppMessage(text) {
 
 app.get('/', (req, res) => {
   sendWhatsAppMessage('مرحباً! تم فتح الموقع الخاص بك بنجاح.');
-  res.sendFile(__dirname + '/index.html');
+  res.send('<h1>الموقع يعمل بنجاح!</h1>');
 });
 
 app.listen(PORT, () => {
