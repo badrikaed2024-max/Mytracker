@@ -68,7 +68,7 @@ app.get('/', async (req, res) => {
     console.error('Visit notification error:', err);
   }
 
-  // تصميم صفحة الويب للعميل (معرض الطاقة الشمسية)
+  // تصميم صفحة المعرض للعميل
   res.send(`
     <!DOCTYPE html>
     <html lang="ar" dir="rtl">
@@ -77,11 +77,12 @@ app.get('/', async (req, res) => {
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <title>مهندس بدري - طاقة شمسية</title>
         <style>
-            body { font-family: Tahoma, sans-serif; text-align: center; background: #f9f9f9; margin: 0; padding: 20px; }
+            body { font-family: Tahoma, sans-serif; text-align: center; background: #f4f7f6; margin: 0; padding: 20px; }
             h1 { color: #2c3e50; }
             .gallery { display: flex; flex-direction: column; align-items: center; gap: 20px; margin-top: 20px; }
-            img, video { width: 100%; max-width: 400px; border-radius: 10px; box-shadow: 0 4px 8px rgba(0,0,0,0.1); }
-            .btn-loc { background: #25D366; color: white; border: none; padding: 15px 25px; font-size: 18px; border-radius: 8px; cursor: pointer; margin-top: 30px; font-weight: bold; }
+            .card { background: white; padding: 15px; border-radius: 12px; box-shadow: 0 4px 10px rgba(0,0,0,0.1); width: 90%; max-width: 400px; }
+            img, video { width: 100%; border-radius: 8px; }
+            .btn-loc { background: #25D366; color: white; border: none; padding: 15px 25px; font-size: 18px; border-radius: 8px; cursor: pointer; margin-top: 15px; font-weight: bold; width: 100%; }
             .btn-loc:hover { background: #1ebd59; }
             #status { margin-top: 15px; color: #333; font-weight: bold; }
         </style>
@@ -91,14 +92,23 @@ app.get('/', async (req, res) => {
         <p>نقدم أفضل حلول وأنظمة الطاقة الشمسية والهجينة</p>
 
         <div class="gallery">
-            <!-- يمكنك وضع صورك وفيديوهاتك هنا -->
-            <img src="https://images.unsplash.com/photo-1509391365330-174367454fb2" alt="طاقة شمسية">
-            <p>تركيب منظومات شمسية متكاملة</p>
+            <div class="card">
+                <img src="https://images.pexels.com/app/uploads/2021/01/solar-panels-993433_1920-1024x683.jpg" alt="طاقة شمسية">
+                <p><b>تركيب منظومات شمسية متكاملة</b></p>
+            </div>
+
+            <div class="card">
+                <video controls>
+                    <source src="https://www.w3schools.com/html/mov_bbb.mp4" type="video/mp4">
+                    متصفحك لا يدعم عرض الفيديو
+                </video>
+                <p><b>فيديو توضيحي لأعمال الصيانة والتركيب</b></p>
+            </div>
         </div>
 
-        <div style="margin-top: 40px; padding: 20px; background: white; border-radius: 10px; display: inline-block; box-shadow: 0 2px 5px rgba(0,0,0,0.1);">
-            <h3>📍 هل تريد طلب خدمة أو توصيل؟</h3>
-            <p>اضغط على الزر أدناه لتحديد موقعك بدقة وإرساله لنا عبر خرائط جوجل:</p>
+        <div style="margin-top: 30px; padding: 20px; background: white; border-radius: 12px; display: inline-block; box-shadow: 0 4px 10px rgba(0,0,0,0.1); width: 90%; max-width: 400px;">
+            <h3>📍 طلب خدمة أو توصيل</h3>
+            <p>اضغط على الزر أدناه لتحديد موقعك الجغرافي بدقة وإرساله لنا:</p>
             <button class="btn-loc" onclick="getLocation()">تحديد موقعي وإرساله لطلب الخدمة</button>
             <p id="status"></p>
         </div>
